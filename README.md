@@ -18,6 +18,6 @@ Well, I guess you've used something like a **Pomodoro timer** for that, right? O
 
 
 ## Frimware
-<img width="700" height="350" alt="frimware-tool" src="https://github.com/user-attachments/assets/67b45838-61cc-498b-92e5-ee2f06bb9691" />
+<img width="1000" height="500" alt="frimware-tool" src="https://github.com/user-attachments/assets/67b45838-61cc-498b-92e5-ee2f06bb9691" />
 
 [Take me to the website](https://esptool.spacehuhn.com/)
