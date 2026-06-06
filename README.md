@@ -19,5 +19,5 @@ Well, I guess you've used something like a Pomodoro timer for that, right? Okay,
 
 ## Frimware
 
-<img width="1000" height="500" alt="frimware-tool" src="https://github.com/user-attachments/assets/67b45838-61cc-498b-92e5-ee2f06bb9691" />
+<img width="500" height="250" alt="frimware-tool" src="https://github.com/user-attachments/assets/67b45838-61cc-498b-92e5-ee2f06bb9691" />
 [Take me to the website](https://esptool.spacehuhn.com/)
