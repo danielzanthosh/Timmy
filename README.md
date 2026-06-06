@@ -17,3 +17,7 @@ Well, I guess you've used something like a Pomodoro timer for that, right? Okay,
 - A 0.96 OLED for viewing
 - And a Buzzer to wake you up
 
+## Frimware
+
+<img width="1000" height="500" alt="frimware-tool" src="https://github.com/user-attachments/assets/67b45838-61cc-498b-92e5-ee2f06bb9691" />
+[Take me to the website](https://esptool.spacehuhn.com/)
