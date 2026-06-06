@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Timmy — Desktop Pomodoro Timer</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg: #0b0c0f;
+                --surface: #111318;
+                --border: #1e2128;
+                --accent: #f5c842;
+                --accent2: #e87d3e;
+                --text: #e8e6e0;
+                --muted: #6b6e7a;
+                --green: #6fcf8a;
+            }
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "DM Mono", monospace;
+                font-size: 14px;
+                line-height: 1.7;
+                overflow-x: hidden;
+            }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 9999;
+                opacity: 0.35;
+            }
+
+            /* HERO */
+            .hero {
+                min-height: 100vh;
+                display: grid;
+                grid-template-rows: auto 1fr auto;
+                padding: 2rem 2.5rem;
+                border-bottom: 1px solid var(--border);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-bg-circle {
+                position: absolute;
+                width: 600px;
+                height: 600px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    rgba(245, 200, 66, 0.07) 0%,
+                    transparent 70%
+                );
+                top: -100px;
+                right: -100px;
+                pointer-events: none;
+            }
+            .hero-bg-circle2 {
+                position: absolute;
+                width: 400px;
+                height: 400px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    rgba(232, 125, 62, 0.05) 0%,
+                    transparent 70%
+                );
+                bottom: 0;
+                left: -100px;
+                pointer-events: none;
+            }
+
+            nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+            }
+
+            .logo {
+                font-family: "Syne", sans-serif;
+                font-weight: 800;
+                font-size: 1.1rem;
+                letter-spacing: -0.02em;
+                color: var(--accent);
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 2rem;
+            }
+            .nav-links a {
+                color: var(--muted);
+                text-decoration: none;
+                font-size: 12px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: var(--text);
+            }
+
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 1.5rem;
+                position: relative;
+                z-index: 1;
+                padding: 4rem 0;
+                max-width: 700px;
+            }
+
+            .tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: rgba(245, 200, 66, 0.08);
+                border: 1px solid rgba(245, 200, 66, 0.2);
+                color: var(--accent);
+                padding: 0.3rem 0.8rem;
+                border-radius: 999px;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+            }
+
+            .tag::before {
+                content: "";
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--accent);
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.3;
+                }
+            }
+
+            h1 {
+                font-family: "Instrument Serif", serif;
+                font-size: clamp(3.5rem, 8vw, 6rem);
+                line-height: 0.95;
+                letter-spacing: -0.03em;
+                font-weight: 400;
+            }
+            h1 em {
+                font-style: italic;
+                color: var(--accent);
+            }
+
+            .hero-desc {
+                color: var(--muted);
+                font-size: 13px;
+                max-width: 480px;
+                line-height: 1.8;
+            }
+
+            .hero-ctas {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+                margin-top: 0.5rem;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.7rem 1.4rem;
+                border-radius: 6px;
+                font-family: "DM Mono", monospace;
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-decoration: none;
+                text-transform: uppercase;
+                transition: all 0.2s;
+                cursor: pointer;
+                border: none;
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: #0b0c0f;
+                font-weight: 500;
+            }
+            .btn-primary:hover {
+                background: #ffd84d;
+                transform: translateY(-1px);
+            }
+
+            .btn-outline {
+                background: transparent;
+                border: 1px solid var(--border);
+                color: var(--muted);
+            }
+            .btn-outline:hover {
+                border-color: var(--muted);
+                color: var(--text);
+            }
+
+            .btn-upvote {
+                background: linear-gradient(135deg, #e87d3e, #c7522a);
+                color: #fff;
+            }
+            .btn-upvote:hover {
+                transform: translateY(-1px);
+                filter: brightness(1.1);
+            }
+
+            .hero-stats {
+                display: flex;
+                gap: 2.5rem;
+                position: relative;
+                z-index: 1;
+                padding-top: 2rem;
+                border-top: 1px solid var(--border);
+            }
+
+            .stat-val {
+                font-family: "Syne", sans-serif;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--accent);
+            }
+            .stat-label {
+                font-size: 11px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+
+            /* SECTIONS */
+            section {
+                padding: 5rem 2.5rem;
+                border-bottom: 1px solid var(--border);
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+
+            .section-label {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: var(--accent);
+                margin-bottom: 1rem;
+            }
+
+            h2 {
+                font-family: "Instrument Serif", serif;
+                font-size: clamp(2rem, 4vw, 3rem);
+                font-weight: 400;
+                letter-spacing: -0.02em;
+                line-height: 1.1;
+                margin-bottom: 3rem;
+            }
+
+            /* FEATURES */
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1px;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            .feature-card {
+                background: var(--surface);
+                padding: 2rem;
+                transition: background 0.2s;
+            }
+            .feature-card:hover {
+                background: #161820;
+            }
+
+            .feature-title {
+                font-family: "Syne", sans-serif;
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: var(--text);
+                margin-bottom: 0.5rem;
+            }
+            .feature-desc {
+                font-size: 12px;
+                color: var(--muted);
+                line-height: 1.6;
+            }
+
+            .feature-dot {
+                width: 28px;
+                height: 28px;
+                border-radius: 6px;
+                background: rgba(245, 200, 66, 0.1);
+                border: 1px solid rgba(245, 200, 66, 0.2);
+                margin-bottom: 1rem;
+            }
+
+            /* BOM */
+            .bom-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1px;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            .bom-item {
+                display: grid;
+                grid-template-columns: 88px 1fr auto;
+                align-items: center;
+                gap: 1.5rem;
+                background: var(--surface);
+                padding: 1.25rem 1.5rem;
+                transition: background 0.2s;
+            }
+            .bom-item:hover {
+                background: #161820;
+            }
+
+            .bom-img-wrap {
+                width: 88px;
+                height: 88px;
+                border-radius: 8px;
+                background: #f5f5f0;
+                border: 1px solid var(--border);
+                overflow: hidden;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .bom-img-wrap img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                padding: 6px;
+            }
+
+            .bom-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .bom-name {
+                font-family: "Syne", sans-serif;
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+
+            .bom-desc {
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            .bom-actions {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                flex-shrink: 0;
+            }
+
+            .bom-qty {
+                font-size: 11px;
+                color: var(--muted);
+                border: 1px solid var(--border);
+                padding: 0.2rem 0.6rem;
+                border-radius: 4px;
+                white-space: nowrap;
+            }
+
+            .bom-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                color: var(--accent);
+                font-size: 11px;
+                text-decoration: none;
+                border: 1px solid rgba(245, 200, 66, 0.25);
+                padding: 0.35rem 0.8rem;
+                border-radius: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                transition: all 0.2s;
+                white-space: nowrap;
+            }
+            .bom-link:hover {
+                background: rgba(245, 200, 66, 0.08);
+            }
+
+            .affiliate-note {
+                margin-top: 1rem;
+                font-size: 11px;
+                color: var(--muted);
+                border-left: 2px solid var(--border);
+                padding-left: 1rem;
+            }
+
+            /* FIRMWARE */
+            .fw-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+            @media (max-width: 700px) {
+                .fw-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .fw-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 2rem;
+            }
+
+            .step-num {
+                font-family: "Syne", sans-serif;
+                font-size: 3rem;
+                font-weight: 800;
+                color: rgba(245, 200, 66, 0.15);
+                line-height: 1;
+                margin-bottom: 0.5rem;
+            }
+
+            .fw-step-title {
+                font-family: "Syne", sans-serif;
+                font-size: 0.9rem;
+                font-weight: 700;
+                margin-bottom: 0.75rem;
+            }
+
+            .fw-step-desc {
+                font-size: 12px;
+                color: var(--muted);
+                line-height: 1.7;
+            }
+
+            code {
+                background: #1a1d24;
+                border: 1px solid var(--border);
+                color: var(--green);
+                padding: 0.15rem 0.45rem;
+                border-radius: 4px;
+                font-size: 11px;
+                font-family: "DM Mono", monospace;
+            }
+
+            .code-block {
+                background: #0d0f12;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 1rem 1.25rem;
+                margin-top: 0.75rem;
+                font-size: 11px;
+                color: var(--green);
+                font-family: "DM Mono", monospace;
+                line-height: 1.8;
+                overflow-x: auto;
+            }
+
+            .fw-download-box {
+                grid-column: 1 / -1;
+                background: linear-gradient(
+                    135deg,
+                    rgba(245, 200, 66, 0.06),
+                    rgba(232, 125, 62, 0.04)
+                );
+                border: 1px solid rgba(245, 200, 66, 0.2);
+                border-radius: 12px;
+                padding: 2.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .fw-dl-text h3 {
+                font-family: "Syne", sans-serif;
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+            .fw-dl-text p {
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            /* AUTHOR */
+            .author-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 2.5rem;
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+                flex-wrap: wrap;
+                margin-bottom: 2rem;
+            }
+
+            .author-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                border: 2px solid var(--accent);
+                overflow: hidden;
+                flex-shrink: 0;
+            }
+            .author-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .author-name {
+                font-family: "Syne", sans-serif;
+                font-size: 1.3rem;
+                font-weight: 800;
+                margin-bottom: 0.25rem;
+            }
+            .author-bio {
+                font-size: 12px;
+                color: var(--muted);
+                margin-bottom: 1rem;
+            }
+            .author-links {
+                display: flex;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                font-size: 11px;
+                padding: 0.3rem 0.8rem;
+                border-radius: 999px;
+                border: 1px solid var(--border);
+                color: var(--muted);
+                text-decoration: none;
+                transition: all 0.2s;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+            .pill:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+            /* UPVOTE */
+            .upvote-banner {
+                background: linear-gradient(135deg, #1a1206, #160d05);
+                border: 1px solid rgba(232, 125, 62, 0.3);
+                border-radius: 16px;
+                padding: 2.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .upvote-banner h3 {
+                font-family: "Instrument Serif", serif;
+                font-size: 1.6rem;
+                font-weight: 400;
+                margin-bottom: 0.5rem;
+            }
+            .upvote-banner p {
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            .license-box {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.75rem;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 1rem 1.5rem;
+                font-size: 12px;
+                color: var(--muted);
+                margin-top: 1.5rem;
+            }
+            .license-box span {
+                color: var(--text);
+            }
+
+            /* AI BANNER */
+            .ai-banner {
+                background: #0e0f13;
+                border-bottom: 1px solid var(--border);
+                padding: 0.6rem 2.5rem;
+                text-align: center;
+                font-size: 11px;
+                color: var(--muted);
+                letter-spacing: 0.04em;
+            }
+            .ai-banner a {
+                color: var(--accent);
+                text-decoration: none;
+            }
+            .ai-banner a:hover {
+                text-decoration: underline;
+            }
+
+            /* FOOTER */
+            footer {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 3rem 2.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+                color: var(--muted);
+                font-size: 11px;
+            }
+
+            /* ANIM */
+            .fade-up {
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeUp 0.6s forwards;
+            }
+            @keyframes fadeUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .delay-1 {
+                animation-delay: 0.1s;
+            }
+            .delay-2 {
+                animation-delay: 0.2s;
+            }
+            .delay-3 {
+                animation-delay: 0.3s;
+            }
+            .delay-4 {
+                animation-delay: 0.4s;
+            }
+
+            @media (max-width: 600px) {
+                section {
+                    padding: 3rem 1.25rem;
+                }
+                .hero {
+                    padding: 1.5rem;
+                }
+                .bom-item {
+                    grid-template-columns: 72px 1fr;
+                }
+                .bom-actions {
+                    grid-column: 1 / -1;
+                }
+                .author-card {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- AI GENERATED NOTICE -->
+        <div class="ai-banner">
+            This website was designed and generated with AI assistance &mdash;
+            <a href="https://timmy-getstarted.vercel.app" target="_blank"
+                >Deployed website on Vercel</a
+            >. Content and project by
+            <a href="https://github.com/danielzanthosh" target="_blank"
+                >danielzanthosh</a
+            >.
+        </div>
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-bg-circle"></div>
+            <div class="hero-bg-circle2"></div>
+
+            <nav>
+                <div class="logo">Timmy</div>
+                <div class="nav-links">
+                    <a href="#bom">BOM</a>
+                    <a href="#firmware">Firmware</a>
+                    <a href="#author">Author</a>
+                </div>
+            </nav>
+
+            <div class="hero-content">
+                <div class="tag fade-up">ESP32-C3 &middot; Pomodoro Timer</div>
+                <h1 class="fade-up delay-1">
+                    Meet <em>Timmy.</em><br />Focus, undistracted.
+                </h1>
+                <p class="hero-desc fade-up delay-2">
+                    You've used Pomodoro apps &mdash; phone on your desk,
+                    constant notifications, constant temptation. Timmy is a
+                    standalone desktop utility with a physical screen, a rotary
+                    knob, and a gyroscope. No phone. No distractions. Just time.
+                </p>
+                <div class="hero-ctas fade-up delay-3">
+                    <a href="#firmware" class="btn btn-primary"
+                        >Download Firmware</a
+                    >
+                    <a
+                        href="https://macondo.hackclub.com/projects/7778"
+                        target="_blank"
+                        class="btn btn-upvote"
+                        >Upvote on Hack Club</a
+                    >
+                    <a
+                        href="https://github.com/danielzanthosh"
+                        target="_blank"
+                        class="btn btn-outline"
+                        >GitHub</a
+                    >
+                </div>
+            </div>
+
+            <div class="hero-stats fade-up delay-4">
+                <div>
+                    <div class="stat-val">5</div>
+                    <div class="stat-label">Components</div>
+                </div>
+                <div>
+                    <div class="stat-val">8h</div>
+                    <div class="stat-label">Build Time</div>
+                </div>
+                <div>
+                    <div class="stat-val">MIT</div>
+                    <div class="stat-label">License</div>
+                </div>
+                <div>
+                    <div class="stat-val">v1</div>
+                    <div class="stat-label">Hardware Rev</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEATURES -->
+        <section id="features">
+            <div class="section-label">Features</div>
+            <h2>Everything you need,<br />nothing you don't.</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-dot"></div>
+                    <div class="feature-title">Web Dashboard</div>
+                    <div class="feature-desc">
+                        Configure sessions, break times, and alerts from any
+                        browser on your local network.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-dot"></div>
+                    <div class="feature-title">Gyroscope Actions</div>
+                    <div class="feature-desc">
+                        Flip or tilt Timmy to pause, skip, or reset &mdash; no
+                        buttons needed, just muscle memory.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-dot"></div>
+                    <div class="feature-title">Rotary Encoder</div>
+                    <div class="feature-desc">
+                        Spin the knob to change timer duration on the fly, right
+                        on your desk.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-dot"></div>
+                    <div class="feature-title">0.96&Prime; OLED</div>
+                    <div class="feature-desc">
+                        Crisp monochrome display shows time remaining, session
+                        count, and current mode.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-dot"></div>
+                    <div class="feature-title">Buzzer Alert</div>
+                    <div class="feature-desc">
+                        An audible buzzer that gets your attention when the
+                        session ends. No silent vibrations.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BILL OF MATERIALS -->
+        <section id="bom">
+            <div class="section-label">Bill of Materials</div>
+            <h2>What you need<br />to build one.</h2>
+            <div class="bom-list">
+                <div class="bom-item">
+                    <div class="bom-img-wrap">
+                        <img
+                            src="https://randomnerdtutorials.com/wp-content/uploads/2023/10/esp32-c3-supermini-top-view.png"
+                            alt="ESP32-C3 Super Mini"
+                            onerror="
+                                this.src =
+                                    'https://mischianti.org/wp-content/uploads/2023/09/ESP32-C3-SuperMini-pinout-high-resolution.jpg';
+                                this.onerror = null;
+                            "
+                        />
+                    </div>
+                    <div class="bom-info">
+                        <div class="bom-name">ESP32-C3 Super Mini</div>
+                        <div class="bom-desc">
+                            RISC-V &middot; Wi-Fi + BLE 5.0 &middot; USB-C
+                            &middot; ultra-compact &middot; 3.3V logic
+                        </div>
+                    </div>
+                    <div class="bom-actions">
+                        <div class="bom-qty">Qty: 1</div>
+                        <a
+                            href="https://amzn.to/49HKQJs"
+                            target="_blank"
+                            class="bom-link"
+                            >Amazon &#8599;</a
+                        >
+                    </div>
+                </div>
+
+                <div class="bom-item">
+                    <div class="bom-img-wrap">
+                        <img
+                            src="https://lastminuteengineers.com/wp-content/uploads/arduino/MPU6050-Module.jpg"
+                            alt="MPU6050 Gyroscope"
+                            onerror="
+                                this.src =
+                                    'https://components101.com/sites/default/files/component_pin/MPU6050-Module-Pinout.png';
+                                this.onerror = null;
+                            "
+                        />
+                    </div>
+                    <div class="bom-info">
+                        <div class="bom-name">
+                            MPU6050 Gyroscope / Accelerometer
+                        </div>
+                        <div class="bom-desc">
+                            6-axis IMU &middot; I2C &middot; 3.3V/5V tolerant
+                            &middot; GY-521 breakout
+                        </div>
+                    </div>
+                    <div class="bom-actions">
+                        <div class="bom-qty">Qty: 1</div>
+                        <a
+                            href="https://amzn.to/4e4n0ZJ"
+                            target="_blank"
+                            class="bom-link"
+                            >Amazon &#8599;</a
+                        >
+                    </div>
+                </div>
+
+                <div class="bom-item">
+                    <div class="bom-img-wrap">
+                        <img
+                            src="https://lastminuteengineers.com/wp-content/uploads/arduino/Rotary-Encoder-Module.jpg"
+                            alt="Rotary Encoder EC11"
+                            onerror="
+                                this.src =
+                                    'https://components101.com/sites/default/files/component_pin/KY-040-Rotary-Encoder-Module-Pinout.png';
+                                this.onerror = null;
+                            "
+                        />
+                    </div>
+                    <div class="bom-info">
+                        <div class="bom-name">Rotary Encoder EC11</div>
+                        <div class="bom-desc">
+                            EC11 20-detent rotary encoder with push button
+                            &middot; 5-pin
+                        </div>
+                    </div>
+                    <div class="bom-actions">
+                        <div class="bom-qty">Qty: 1</div>
+                        <a
+                            href="https://amzn.to/4ulIMhP"
+                            target="_blank"
+                            class="bom-link"
+                            >Amazon &#8599;</a
+                        >
+                    </div>
+                </div>
+
+                <div class="bom-item">
+                    <div class="bom-img-wrap">
+                        <img
+                            src="https://lastminuteengineers.com/wp-content/uploads/arduino/Passive-Buzzer-Module.jpg"
+                            alt="Passive Buzzer 10mm"
+                            onerror="
+                                this.src =
+                                    'https://components101.com/sites/default/files/component_pin/Passive-Buzzer-Module-Pinout.jpg';
+                                this.onerror = null;
+                            "
+                        />
+                    </div>
+                    <div class="bom-info">
+                        <div class="bom-name">Passive Buzzer 10mm</div>
+                        <div class="bom-desc">
+                            10mm passive piezo buzzer &middot; 3V&ndash;5V
+                            &middot; through-hole
+                        </div>
+                    </div>
+                    <div class="bom-actions">
+                        <div class="bom-qty">Qty: 1</div>
+                        <a
+                            href="https://amzn.to/4dR4gOB"
+                            target="_blank"
+                            class="bom-link"
+                            >Amazon &#8599;</a
+                        >
+                    </div>
+                </div>
+
+                <div class="bom-item">
+                    <div class="bom-img-wrap">
+                        <img
+                            src="https://lastminuteengineers.com/wp-content/uploads/arduino/I2C-OLED-Display-Module.jpg"
+                            alt="0.96 inch OLED Display"
+                            onerror="
+                                this.src =
+                                    'https://components101.com/sites/default/files/component_pin/SSD1306-OLED-Display-Module-Pinout.jpg';
+                                this.onerror = null;
+                            "
+                        />
+                    </div>
+                    <div class="bom-info">
+                        <div class="bom-name">0.96&Prime; OLED Display</div>
+                        <div class="bom-desc">
+                            I2C SSD1306 &middot; 128&times;64 px &middot; 3.3V /
+                            5V &middot; 4-pin
+                        </div>
+                    </div>
+                    <div class="bom-actions">
+                        <div class="bom-qty">Qty: 1</div>
+                        <a
+                            href="https://amzn.to/4uSwtKK"
+                            target="_blank"
+                            class="bom-link"
+                            >Amazon &#8599;</a
+                        >
+                    </div>
+                </div>
+            </div>
+            <p class="affiliate-note">
+                Disclosure: The Amazon links above are affiliate links. If you
+                purchase through them, I may earn a small commission at no extra
+                cost to you.
+            </p>
+        </section>
+
+        <!-- FIRMWARE -->
+        <section id="firmware">
+            <div class="section-label">Firmware Installation</div>
+            <h2>Flash Timmy in<br />four steps.</h2>
+            <div class="fw-grid">
+                <div class="fw-download-box">
+                    <div class="fw-dl-text">
+                        <h3>Timmy Firmware <code>v1.0.0</code></h3>
+                        <p>
+                            Pre-built <code>.bin</code> for ESP32-C3 Super Mini
+                            &middot; MicroPython runtime included
+                        </p>
+                    </div>
+                    <a
+                        href="https://github.com/danielzanthosh"
+                        target="_blank"
+                        class="btn btn-primary"
+                        >Download .bin</a
+                    >
+                </div>
+
+                <div class="fw-card">
+                    <div class="step-num">01</div>
+                    <div class="fw-step-title">Install esptool</div>
+                    <div class="fw-step-desc">
+                        You'll need Python 3 and pip installed. Then grab
+                        esptool from PyPI:
+                        <div class="code-block">pip install esptool</div>
+                    </div>
+                </div>
+
+                <div class="fw-card">
+                    <div class="step-num">02</div>
+                    <div class="fw-step-title">Erase Flash</div>
+                    <div class="fw-step-desc">
+                        Hold the <code>BOOT</code> button while plugging in the
+                        ESP32-C3 via USB-C, then erase existing firmware:
+                        <div class="code-block">
+                            esptool.py --chip esp32c3 \<br />
+                            --port /dev/ttyUSB0 \<br />
+                            erase_flash
+                        </div>
+                        On Windows, replace <code>/dev/ttyUSB0</code> with your
+                        COM port (e.g. <code>COM5</code>).
+                    </div>
+                </div>
+
+                <div class="fw-card">
+                    <div class="step-num">03</div>
+                    <div class="fw-step-title">Flash the Firmware</div>
+                    <div class="fw-step-desc">
+                        Run the write command pointing to the downloaded
+                        <code>.bin</code>:
+                        <div class="code-block">
+                            esptool.py --chip esp32c3 \<br />
+                            --port /dev/ttyUSB0 \<br />
+                            --baud 460800 write_flash \<br />
+                            -z 0x0 timmy_v1.0.0.bin
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fw-card">
+                    <div class="step-num">04</div>
+                    <div class="fw-step-title">Connect &amp; Configure</div>
+                    <div class="fw-step-desc">
+                        Power cycle the board. Timmy will broadcast a Wi-Fi AP
+                        named <code>Timmy-Setup</code>. Connect to it and
+                        navigate to <code>192.168.4.1</code> in your browser to
+                        open the web dashboard and configure your home Wi-Fi and
+                        Pomodoro settings.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUTHOR -->
+        <section id="author">
+            <div class="section-label">Author</div>
+            <h2>Made by a human,<br />with caffeine.</h2>
+
+            <div class="author-card">
+                <div class="author-avatar">
+                    <img
+                        src="https://github.com/danielzanthosh.png"
+                        alt="danielzanthosh"
+                        onerror="
+                            this.style.background = '#1a1d24';
+                            this.style.display = 'flex';
+                            this.style.alignItems = 'center';
+                            this.style.justifyContent = 'center';
+                        "
+                    />
+                </div>
+                <div>
+                    <div class="author-name">Daniel Santhosh</div>
+                    <div class="author-bio">
+                        Grade 10 student &middot; Kerala, India &middot; First
+                        hardware project ever.<br />
+                        Usually found building Rust TUIs, Linux distros, and
+                        full-stack apps.
+                    </div>
+                    <div class="author-links">
+                        <a
+                            href="https://github.com/danielzanthosh"
+                            target="_blank"
+                            class="pill"
+                            >GitHub</a
+                        >
+                        <a
+                            href="https://macondo.hackclub.com/projects/7778"
+                            target="_blank"
+                            class="pill"
+                            >Hack Club</a
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <div class="upvote-banner">
+                <div>
+                    <h3>Like Timmy? Give it an upvote.</h3>
+                    <p>
+                        This project was submitted to Hack Club's hardware
+                        program. Your upvote means a lot.
+                    </p>
+                </div>
+                <a
+                    href="https://macondo.hackclub.com/projects/7778"
+                    target="_blank"
+                    class="btn btn-upvote"
+                    >Upvote on Hack Club</a
+                >
+            </div>
+
+            <div class="license-box">
+                Licensed under <span>MIT</span> &mdash; because why not. Use it,
+                remix it, ship it.
+            </div>
+        </section>
+
+        <footer>
+            <div>
+                &copy; 2026 Daniel Santhosh &middot; Timmy Hardware Project
+            </div>
+            <div>
+                Website generated with AI assistance &middot; ESP32-C3 &middot;
+                MIT License
+            </div>
+        </footer>
+    </body>
+</html>
