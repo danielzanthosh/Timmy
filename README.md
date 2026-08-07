@@ -46,4 +46,4 @@ There is total 5 components if you havn't noticed already.
 | 10mm Passive Buzzer | https://amzn.to/4dR4gOB |
 | 0.96" OLED Display | https://amzn.to/4uSwtKK |
 
-> **Disclosure:** Amazon links are affiliate links. A small commission may be earned at no extra cost to you.
+> The given Amazon links are affiliate. A small commission may be earned at no extra cost to you.
