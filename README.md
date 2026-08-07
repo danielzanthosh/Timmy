@@ -22,7 +22,7 @@ Well, I guess you've used something like a **Pomodoro timer** for that, right? O
 
 [Take me to the website](https://esptool.spacehuhn.com/)
 
-## 🧾 Bill of Materials (BOM)
+## BOM
 
 These are the hardware required:
 
